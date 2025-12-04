@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int                @id @default(autoincrement())
+  name              String
+  email             String             @unique
+  password          String
+  createdAt         DateTime           @default(now())
+  dailyConsumptions DailyConsumption[]
+  dailyLogs         DailyLog[]
+}
+
+model DailyLog {
+  id       Int      @id @default(autoincrement())
+  weight   Float?
+  height   Float?
+  imc      Float?
+  tmb      Float?
+  mensagem String?
+  date     DateTime @default(now())
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model DailyConsumption {
+  id        Int      @id @default(autoincrement())
+  calorias  Float
+  treinoMin Int
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
