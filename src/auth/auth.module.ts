@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),   // <-- IMPORTANTE PARA RENDER
     PrismaModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -21,6 +22,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [AuthService], // <-- se outro módulo precisar usar o AuthService
+  exports: [AuthService],
 })
 export class AuthModule {}
