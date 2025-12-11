@@ -24,18 +24,21 @@ export class AuthService {
 
     return { message: 'Usuário registrado com sucesso', id: user.id };
   }
+  
+async login(loginUserDto: LoginUserDto) {
+  const { email, password } = loginUserDto;
 
-  async login(loginUserDto: LoginUserDto) {
-    const { email, password } = loginUserDto;
+  // 👇 ADICIONAMOS ESTE LOG
+  const user = await this.prisma.user.findUnique({ where: { email } });
+  console.log("USER FOUND:", user);
 
-    const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user) throw new UnauthorizedException('Usuário ou senha inválidos');
+  if (!user) throw new UnauthorizedException('Usuário ou senha inválidos');
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new UnauthorizedException('Usuário ou senha inválidos');
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) throw new UnauthorizedException('Usuário ou senha inválidos');
 
-    const access_token = this.jwtService.sign({ sub: user.id, email: user.email });
-    return { access_token };
-  }
+  const access_token = this.jwtService.sign({ sub: user.id, email: user.email });
+  return { access_token };
+}
 }
 
